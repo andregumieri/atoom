@@ -13,14 +13,21 @@ var Atom = function(type, connections) {
 	 * Constructor function of the stage
 	 */
 	var __constructor = function(type, connections) {
-		atom.innerHTML = type;
 		atom.className="atom";
 		atom.style.position = 'absolute';
-		atom.style.backgroundColor = '#ccc';
+
+		var drawAtom = document.createElement('div');
+		drawAtom.className = 'draw';
+		atom.appendChild(drawAtom);
+		drawAtom.innerHTML = type;
 
 		for(var connType in connections) {
 			if(connectionsTypes.indexOf(connType)>=0) {
 				var conn = document.createElement('div');
+				for(var x=0; x<connections[connType]; x++) {
+					var connDraw = document.createElement('div');
+					conn.appendChild(connDraw);
+				}
 				conn.className="conn " + connType.toLowerCase() + " qtd" + connections[connType];
 				atom.appendChild(conn);
 			}

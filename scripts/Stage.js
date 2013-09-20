@@ -7,6 +7,7 @@
 var Stage = function(size, blocksize) {
 	this.stageContainer = document.createElement('div');
 	this.blocksElements = [];
+	this.touchIsActive = true;
 
 	/**
 	 * Stage.__constructor()
@@ -16,7 +17,8 @@ var Stage = function(size, blocksize) {
 		this.stageContainer.style.position='absolute';
 		this.stageContainer.style.width = blocksize*size[0] + "px";
 		this.stageContainer.style.height = blocksize*size[1] + "px";
-
+		this.stageContainer.style.top = '100px';
+		this.stageContainer.style.left = '50px';
 
 		for(var c = 0; c<size[0]; c++) {
 			for(var l = 0; l<size[1]; l++) {
@@ -86,18 +88,20 @@ var Stage = function(size, blocksize) {
 
 		var fnTouchStart = function(e) {
 			e.preventDefault();
+			if(!self.touchIsActive) return false;
 			infoTouch.startTime = (new Date()).getTime();
 			infoTouch.startPos = [e.pageX, e.pageY];
 		}
 
 		var fnTouchMove = function(e) {
 			e.preventDefault();
+			if(!self.touchIsActive) return false;
 			if(!infoTouch.startTime) return;
 			var firstMove = (infoTouch.distance===null) ? true : false;
 
 			infoTouch.distance = [infoTouch.startPos[0]-e.pageX, infoTouch.startPos[1]-e.pageY];
 			if(firstMove) { // First move event
-				infoTouch.axis = Math.abs(infoTouch.distance[0])>=Math.abs(infoTouch.distance[1]) ? 0 : 1; // 0: X (horizontal); 1: Y (vertical)
+				infoTouch.axis = Math.abs(infoTouch.distance[0])>Math.abs(infoTouch.distance[1]) ? 0 : 1; // 0: X (horizontal); 1: Y (vertical)
 				var tendency = (infoTouch.distance[infoTouch.axis]>0) ? 0 : 1;
 				infoTouch.direction = [['left','right'],['up','down']][infoTouch.axis][tendency];
 			}
@@ -105,6 +109,7 @@ var Stage = function(size, blocksize) {
 
 		var fnTouchEnd = function(e) {
 			e.preventDefault();
+			if(!self.touchIsActive) return false;
 
 			// Final position and time
 			var endPos = [e.pageX, e.pageY];
@@ -168,7 +173,7 @@ var Stage = function(size, blocksize) {
 			}
 		}
 
-		self.setElementPosition(atom, moveTo);
+		self.setElementPosition(atom, moveTo, true);
 	};
 
 
@@ -179,16 +184,52 @@ var Stage = function(size, blocksize) {
 	 *
 	 * @param DOM element
 	 * @param ARRAY position - [INT column, INT line]
+	 * @param BOOL animated
 	 */
-	this.setElementPosition = function(element, position) {
+	this.setElementPosition = function(element, position, animated) {
+		var self = this;
+		var column = position[0];
+		var line = position[1];
+		var top = (position[1]*blocksize) + "px";
+		var left = (position[0]*blocksize) + "px";
+
+
 		if(element.stageColumn && element.stageLine) {
 			this.blocksElements[element.stageColumn][element.stageLine].stageBlockType = '';
 		}
-		element.stageColumn = position[0];
-		element.stageLine = position[1];
 
-		element.style.left = (position[0]*blocksize) + "px";
-		element.style.top = (position[1]*blocksize) + "px";
+		if(animated===true) {
+			self.touchIsActive = false;
+			var newElement = element.cloneNode(true);
+			newElement.style.backgroundColor = '#F4F';
+			this.stageContainer.appendChild(newElement);
+			element._displayString = element.style.display;
+			element.style.display = 'none';
+
+			var fnEventTransitionEnd = function(e) {
+				self.touchIsActive = true;
+				element.style.display = element._displayString;
+				newElement.parentNode.removeChild(newElement);
+			}
+
+			var translateLeft = parseInt(left)-parseInt(newElement.style.left);
+			var translateTop = parseInt(top)-parseInt(newElement.style.top);
+
+			newElement.style.webkitTransitionProperty = '-webkit-transform';
+			newElement.style.webkitTransitionDuration = '300ms';
+			newElement.style.webkitTransitionTimingFunction = 'ease-in-out';
+			newElement.addEventListener('webkitTransitionEnd', fnEventTransitionEnd, false);
+			window.setTimeout(function() { 
+				// Needs Timeout. Otherwise the animation will not be fired.
+				newElement.style.webkitTransform = 'translate3d(' + translateLeft + 'px, ' + translateTop + 'px, 0)';
+			}, 0);
+			
+		}
+
+		element.stageColumn = column;
+		element.stageLine = line;
+		element.style.left = left;
+		element.style.top = top;
 
 		this.blocksElements[element.stageColumn][element.stageLine].stageBlockType = 'atom';
 	};
@@ -235,8 +276,6 @@ var Stage = function(size, blocksize) {
 					this.putWall(c, l);
 				}
 			}
-			// console.log();
-			//for(var c = 0; c<)
 		}
 	};
 

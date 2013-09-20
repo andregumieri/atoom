@@ -17,18 +17,24 @@ CONF.StageDemo = [{
 CONF.Stages = [{
 	size: [11,10],
 	atoms: [{
+		id: 'h-l1',
 		type: "h",
 		connections: {l:1},
+		conectsTo: {l:'o-l1-r1'},
 		column: 2,
 		line: 3
 	},{
+		id: 'h-r1',
 		type: "h",
 		connections: {r:1},
+		conectsTo: {l:'o-l1-r1'},
 		column: 7,
 		line: 3
 	},{
+		id: 'o-l1-r1',
 		type: "o",
 		connections: {l:1,r:1},
+		conectsTo: {l:'h-r1', r:'h-l1'},
 		column: 8,
 		line: 8
 	}],

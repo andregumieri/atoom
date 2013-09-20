@@ -1,8 +1,13 @@
+// Avoid scroll
+window.addEventListener('touchstart', function(e) { e.preventDefault(); }, true);
+window.addEventListener('touchmove', function(e) { e.preventDefault(); }, true);
+
 // Create container
 var container = document.getElementById('container');
-var currentStage = CONF.StageDemo[0];
+var currentStage = CONF.Stages[1];
 
 var possibleBlockSize = Math.round(320/currentStage.size[0]);
+if(possibleBlockSize%2!=0) possibleBlockSize++;
 
 
 var stage = new Stage(currentStage.size, possibleBlockSize);

@@ -1,0 +1,72 @@
+div.atom {
+	text-align: center;
+	line-height: 100%;
+	vertical-align: middle;
+	display:-webkit-box;
+	-webkit-box-pack:center; /* Horizontal */
+	-webkit-box-align:center; /* Vertical */
+}
+
+	div.atom>.draw {
+		width: 80%;
+		height: 80%;
+		border-radius: 100%;
+		background-color: #ccc;
+		opacity: 1;
+		z-index: 10;
+		position: relative;
+	}
+	
+	div.atom>.conn {
+		position: absolute;
+		z-index: 0;
+		display:-webkit-box;
+		-webkit-box-pack:center; /* Horizontal */
+		-webkit-box-align:center; /* Vertical */
+	}
+
+		div.atom>.conn.t>div,
+		div.atom>.conn.b>div {
+			height: 100%;
+			width: 15%;
+			background-color: #000;
+		}
+
+		div.atom>.conn.r>div,
+		div.atom>.conn.l>div {
+			width: 100%;
+			height: 15%;
+			background-color: #000;
+		}
+
+	div.atom>.conn.t {
+		top: 0;
+		left: 0;
+		height: 50%;
+		width: 100%;
+		text-align: center;
+	}
+
+	div.atom>.conn.b {
+		bottom: 0;
+		left: 0;
+		height: 50%;
+		width: 100%;
+		text-align: center;
+	}
+
+	div.atom>.conn.r {
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: 50%;
+		text-align: center;
+	}
+
+	div.atom>.conn.l {
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 50%;
+		text-align: center;
+	}
