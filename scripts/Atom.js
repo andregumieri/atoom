@@ -16,20 +16,18 @@ var Atom = function(type, connections) {
 		atom.className="atom";
 		atom.style.position = 'absolute';
 
-		var drawAtom = document.createElement('div');
-		drawAtom.className = 'draw';
-		atom.appendChild(drawAtom);
-		drawAtom.innerHTML = type;
+		var imgAtom = document.createElement('img');
+		imgAtom.className = 'atom';
+		imgAtom.src = 'skin/atom.svg';
+		atom.appendChild(imgAtom);
 
 		for(var connType in connections) {
 			if(connectionsTypes.indexOf(connType)>=0) {
-				var conn = document.createElement('div');
-				for(var x=0; x<connections[connType]; x++) {
-					var connDraw = document.createElement('div');
-					conn.appendChild(connDraw);
-				}
-				conn.className="conn " + connType.toLowerCase() + " qtd" + connections[connType];
-				atom.appendChild(conn);
+				var qtyConnections = (parseInt(connections[connType])>1) ? parseInt(connections[connType]) : '';
+				var connImg = document.createElement('img');
+				connImg.src = "skin/" + connType.toLowerCase() + qtyConnections + ".svg";
+				connImg.className="conn " + connType.toLowerCase() + " qtd" + connections[connType];
+				atom.appendChild(connImg);
 			}
 		}
 	};
